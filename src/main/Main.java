@@ -1,25 +1,31 @@
 package main;
 
-import java.util.Random;
-
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=== Testing Random for Soccer Simulator ===\n");
+        System.out.println("=== Soccer Simulator - Design Patterns Demo ===\n");
         
-        Random random = new Random();
+        // FACTORY PATTERN DEMO
+        System.out.println("--- Factory Pattern Demo ---");
+        Player striker = PlayerFactory.createPlayer("Rodriguez", "striker");
+        Player midfielder = PlayerFactory.createPlayer("Chen", "midfielder");
+        Player defender = PlayerFactory.createPlayer("Smith", "defender");
+        Player goalkeeper = PlayerFactory.createPlayer("Martinez", "goalkeeper");
         
-        // Test random number generation
-        System.out.println("Rolling dice 5 times (0-100):");
-        for (int i = 1; i <= 5; i++) {
-            int roll = random.nextInt(100);
-            System.out.println("Roll " + i + ": " + roll);
-        }
+        System.out.println("Created " + striker.getName() + " (Striker) - Skill: " + striker.getSkillLevel());
+        System.out.println("Created " + midfielder.getName() + " (Midfielder) - Skill: " + midfielder.getSkillLevel());
+        System.out.println("Created " + defender.getName() + " (Defender) - Skill: " + defender.getSkillLevel());
+        System.out.println("Created " + goalkeeper.getName() + " (Goalkeeper) - Skill: " + goalkeeper.getSkillLevel());
         
-        // Test coin flip
-        System.out.println("\nCoin flip: " + (random.nextBoolean() ? "Team A attacks" : "Team B attacks"));
+        // STRATEGY PATTERN DEMO
+        System.out.println("\n--- Strategy Pattern Demo ---");
+        System.out.println("\nTeam A choosing attacking strategy:");
+        TacticStrategy attackingStrategy = new AttackingTactic();
+        attackingStrategy.execute();
         
-        // Test player
-        Player player = new Player("Messi", 85);
-        System.out.println("\nCreated player: " + player.getName() + " (Skill: " + player.getSkillLevel() + ")");
+        System.out.println("\nTeam B choosing defensive strategy:");
+        TacticStrategy defensiveStrategy = new DefensiveTactic();
+        defensiveStrategy.execute();
+        
+        System.out.println("\n=== Demo Complete ===");
     }
 }
