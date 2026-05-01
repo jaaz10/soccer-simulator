@@ -57,3 +57,40 @@ javac -d src/bin src/main/*.java
 # Then run
 java -cp src/bin main.Main
 
+## Sprint 3: Implemented Design Patterns
+
+#### 1. Factory Pattern
+**Reason:** Makes different player types according to position
+**Classes:** 'PlayerFactory' & 'Player'
+**Advantages** Makes player creation central and its easier to add new postions
+
+#### 2. Stragety Pattern
+**Reason:** Lets teams use various tactics dynamically
+**Classes:** 'TacticStragety' this is interface, 'AttackingTactic' & 'DefendingTactic'
+**Advantages:** Teams can change stragety at runtime and easier to add new tactics
+
+### Final Submission Plans
+
+I plan on demonstrating:
+- Full match sim with teams using various strageties
+- Multiple types of players can be created via the Factory pattern
+- Match commentary showing tactical decisions
+- Tracking score and results of the game
+- CLI interactivity so user can choose tactics
+
+### Problems Encountered
+
+**Issue 1:** Started having issues with how to integrate stragety bonus into real gameplay
+**Solution:** Plan to add bonus calc in future Match class
+
+**Issue 2:** Player class right now is simple but may need subclasses for various positions
+**Solution:** May need to extend in next Sprint 
+
+**Issue 3:** Need to connect patterns together in actual match sim
+**Solution:** Next Sprint I will create Match/Team classes that use the patterns
+
+### Next Steps
+- Make Team class that uses TacticStragety
+- Make Match class that sims games
+- Implement Observer pattern for match events
+- Add State pattern for phases of the match
