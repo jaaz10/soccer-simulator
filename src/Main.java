@@ -1,22 +1,9 @@
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=== Soccer Simulator - Sprint 3 REFACTORED ===");
-        System.out.println("Design Patterns: Factory Method, Strategy, Singleton, Builder\n");
+        System.out.println("=== Soccer Simulator - Sprint 4: STATE PATTERN ===");
+        System.out.println("Design Patterns: Factory Method, Strategy, Singleton, Builder, STATE\n");
 
-        // ===== SINGLETON PATTERN DEMO =====
-        System.out.println("--- Singleton Pattern ---");
-        
-        WorldCup worldCup1 = WorldCup.getInstance();
-        WorldCup worldCup2 = WorldCup.getInstance();
-        
-        if (worldCup1 == worldCup2) {
-            System.out.println("✅ Both references point to the SAME World Cup instance");
-        }
-        System.out.println();
-
-        // ===== BUILDER + FACTORY METHOD PATTERN DEMO =====
-        System.out.println("--- Builder + Factory Method Pattern ---");
-        
+        // Build teams
         Team brazil = new TeamBuilder()
             .setName("Brazil 🇧🇷")
             .addPlayer("Neymar", "Forward")
@@ -35,35 +22,55 @@ public class Main {
             .setTactic(new DefensiveTactic())
             .build();
 
-        // ===== DISPLAY ROSTERS =====
-        brazil.displayRoster();
-        argentina.displayRoster();
-        System.out.println("\n✅ Factory Method Pattern: Position-specific creators");
-        System.out.println();
-
-        // ===== STRATEGY PATTERN DEMO =====
-        System.out.println("--- Strategy Pattern Demo (Focused Calcs) ---");
+        System.out.println("\n--- STATE PATTERN DEMO ---");
         
-        brazil.displayTacticalStats();
-        argentina.displayTacticalStats();
+        // Create match
+        Match match = new Match(brazil, argentina);
         
-        System.out.println("\n--- Argentina Switches to Attacking! ---");
-        argentina.setTactic(new AttackingTactic());
-        argentina.displayTacticalStats();
+        // Try to score before match starts
+        System.out.println("\n--- Trying to score before match starts ---");
+        match.scoreGoal("Brazil 🇧🇷", "Neymar");
         
-        System.out.println("\n✅ Strategy Pattern: Dynamic bonus calcs");
-        System.out.println();
-
-        // ===== ADD TEAMS TO WORLD CUP =====
-        WorldCup worldCup = WorldCup.getInstance();
-        worldCup.addTeam(brazil);
-        worldCup.addTeam(argentina);
-        worldCup.displayWorldCup();
+        // Start match
+        System.out.println("\n--- Starting Match ---");
+        match.startMatch();
         
-        System.out.println("\n=== All 4 Design Patterns Demonstrated! ===");
-        System.out.println("✅ Factory Method Pattern - Position-specific player creators");
-        System.out.println("✅ Strategy Pattern - Focused tactical bonus calculations");
-        System.out.println("✅ Singleton Pattern - One World Cup instance");
-        System.out.println("✅ Builder Pattern - Team building");
+        // Score some goals in first half
+        System.out.println("\n--- First Half Goals ---");
+        match.scoreGoal("Brazil 🇧🇷", "Neymar");
+        match.scoreGoal("Argentina 🇦🇷", "Lionel Messi");
+        
+        // End first half
+        System.out.println("\n--- Ending First Half ---");
+        match.endHalf();
+        
+        // Try to score during half time
+        System.out.println("\n--- Trying to score during half time ---");
+        match.scoreGoal("Brazil 🇧🇷", "Neymar");
+        
+        // Start second half
+        System.out.println("\n--- Starting Second Half ---");
+        match.startMatch();
+        
+        // Score in second half
+        System.out.println("\n--- Second Half Goals ---");
+        match.scoreGoal("Argentina 🇦🇷", "Lionel Messi");
+        match.scoreGoal("Brazil 🇧🇷", "Neymar");
+        
+        // End match
+        System.out.println("\n--- Ending Match ---");
+        match.endMatch();
+        
+        // Try to score after match ends
+        System.out.println("\n--- Trying to score after match ends ---");
+        match.scoreGoal("Brazil 🇧🇷", "Neymar");
+        
+        // Display final info
+        match.displayMatchInfo();
+        
+        System.out.println("\n=== STATE PATTERN Demonstrated! ===");
+        System.out.println("✅ Match transitions through states: PreMatch → FirstHalf → HalfTime → SecondHalf → FullTime");
+        System.out.println("✅ Each state has different behaviors (can/cannot score)");
+        System.out.println("✅ State transitions happen automatically");
     }
 }
