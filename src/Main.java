@@ -1,41 +1,69 @@
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=== Soccer Simulator - Sprint 3: Design Patterns ===\n");
+        System.out.println("=== Soccer Simulator - Sprint 3 REFACTORED ===");
+        System.out.println("Design Patterns: Factory Method, Strategy, Singleton, Builder\n");
 
-        // ===== FACTORY PATTERN DEMO =====
-        System.out.println("--- Factory Pattern Demo ---");
-        Team team1 = new Team("Barcelona");
+        // ===== SINGLETON PATTERN DEMO =====
+        System.out.println("--- Singleton Pattern ---");
         
-        // Factory creates players with position-specific skills
-        team1.addPlayer(PlayerFactory.createPlayer("Messi", "Forward"));
-        team1.addPlayer(PlayerFactory.createPlayer("Xavi", "Midfielder"));
-        team1.addPlayer(PlayerFactory.createPlayer("Pique", "Defender"));
-        team1.addPlayer(PlayerFactory.createPlayer("Ter Stegen", "Goalkeeper"));
+        WorldCup worldCup1 = WorldCup.getInstance();
+        WorldCup worldCup2 = WorldCup.getInstance();
         
-        team1.displayRoster();
-        System.out.println("✅ Factory Pattern: Centralized player creation\n");
+        if (worldCup1 == worldCup2) {
+            System.out.println("✅ Both references point to the SAME World Cup instance");
+        }
+        System.out.println();
+
+        // ===== BUILDER + FACTORY METHOD PATTERN DEMO =====
+        System.out.println("--- Builder + Factory Method Pattern ---");
+        
+        Team brazil = new TeamBuilder()
+            .setName("Brazil 🇧🇷")
+            .addPlayer("Neymar", "Forward")
+            .addPlayer("Casemiro", "Midfielder")
+            .addPlayer("Marquinhos", "Defender")
+            .addPlayer("Alisson", "Goalkeeper")
+            .setTactic(new AttackingTactic())
+            .build();
+        
+        Team argentina = new TeamBuilder()
+            .setName("Argentina 🇦🇷")
+            .addPlayer("Lionel Messi", "Forward")
+            .addPlayer("Rodrigo De Paul", "Midfielder")
+            .addPlayer("Nicolas Otamendi", "Defender")
+            .addPlayer("Emiliano Martinez", "Goalkeeper")
+            .setTactic(new DefensiveTactic())
+            .build();
+
+        // ===== DISPLAY ROSTERS =====
+        brazil.displayRoster();
+        argentina.displayRoster();
+        System.out.println("\n✅ Factory Method Pattern: Position-specific creators");
+        System.out.println();
 
         // ===== STRATEGY PATTERN DEMO =====
-        System.out.println("\n--- Strategy Pattern Demo ---");
-        Team team2 = new Team("Real Madrid");
+        System.out.println("--- Strategy Pattern Demo (Focused Calcs) ---");
         
-        team2.addPlayer(PlayerFactory.createPlayer("Benzema", "Forward"));
-        team2.addPlayer(PlayerFactory.createPlayer("Modric", "Midfielder"));
+        brazil.displayTacticalStats();
+        argentina.displayTacticalStats();
         
-        // Default tactic (Attacking)
-        team2.executeTactic();
+        System.out.println("\n--- Argentina Switches to Attacking! ---");
+        argentina.setTactic(new AttackingTactic());
+        argentina.displayTacticalStats();
         
-        // Change tactic dynamically
-        System.out.println("\n--- Changing Tactics ---");
-        team2.setTactic(new DefensiveTactic());
-        team2.executeTactic();
+        System.out.println("\n✅ Strategy Pattern: Dynamic bonus calcs");
+        System.out.println();
+
+        // ===== ADD TEAMS TO WORLD CUP =====
+        WorldCup worldCup = WorldCup.getInstance();
+        worldCup.addTeam(brazil);
+        worldCup.addTeam(argentina);
+        worldCup.displayWorldCup();
         
-        System.out.println("\n--- Switching Back ---");
-        team2.setTactic(new AttackingTactic());
-        team2.executeTactic();
-        
-        System.out.println("\n✅ Strategy Pattern: Dynamic behavior changes\n");
-        
-        System.out.println("\n=== Both Design Patterns Demonstrated! ===");
+        System.out.println("\n=== All 4 Design Patterns Demonstrated! ===");
+        System.out.println("✅ Factory Method Pattern - Position-specific player creators");
+        System.out.println("✅ Strategy Pattern - Focused tactical bonus calculations");
+        System.out.println("✅ Singleton Pattern - One World Cup instance");
+        System.out.println("✅ Builder Pattern - Team building");
     }
 }

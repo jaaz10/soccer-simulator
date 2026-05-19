@@ -1,4 +1,6 @@
+// Strategy Interface
 public interface TacticStrategy {
-    void execute();
-    String getDescription();
+    int calculateAttackBonus();
+    int calculateDefenseBonus();
+    String getTacticName();
 }

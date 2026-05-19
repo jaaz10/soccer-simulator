@@ -1,14 +1,17 @@
 public class AttackingTactic implements TacticStrategy {
+    
     @Override
-    public void execute() {
-        System.out.println("⚡ Executing ATTACKING tactic:");
-        System.out.println("   - Focus on offense");
-        System.out.println("   - More forwards pushing up");
-        System.out.println("   - High pressing");
+    public int calculateAttackBonus() {
+        return 15; // +15 attack bonus
     }
-
+    
     @Override
-    public String getDescription() {
+    public int calculateDefenseBonus() {
+        return -5; // -5 defense penalty
+    }
+    
+    @Override
+    public String getTacticName() {
         return "Attacking (4-3-3)";
     }
 }

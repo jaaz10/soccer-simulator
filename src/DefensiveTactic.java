@@ -1,14 +1,18 @@
-public class DefensiveTactic implements TacticStrategy {
-    @Override
-    public void execute() {
-        System.out.println("🛡️ Executing DEFENSIVE tactic:");
-        System.out.println("   - Focus on defense");
-        System.out.println("   - More defenders back");
-        System.out.println("   - Counter-attack style");
-    }
 
+public class DefensiveTactic implements TacticStrategy {
+    
     @Override
-    public String getDescription() {
+    public int calculateAttackBonus() {
+        return -5; // -5 attack penalty
+    }
+    
+    @Override
+    public int calculateDefenseBonus() {
+        return 15; // +15 defense bonus
+    }
+    
+    @Override
+    public String getTacticName() {
         return "Defensive (5-4-1)";
     }
 }

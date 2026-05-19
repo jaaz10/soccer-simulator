@@ -1,5 +1,6 @@
 # Compiled class files
-src/bin/
+*.class
+
 
 # General Java
 *.class
