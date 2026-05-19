@@ -1,18 +1,21 @@
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=== Soccer Simulator ===");
-        System.out.println("Hello World - Sprint 1");
-        System.out.println("\nProject started up successfully!");
-        
-        // Basic test
-        Random random = new Random();
-        ArrayList<String> testList = new ArrayList<>();
-        testList.add("Test");
-        
-        System.out.println("Random test: " + random.nextInt(100));
-        System.out.println("ArrayList test: " + testList.get(0));
+        System.out.println("=== Soccer Simulator - Sprint 2 ===\n");
+
+        // Create a simple team
+        ArrayList<Player> team = new ArrayList<>();
+        team.add(new Player("Messi", "Forward", 95));
+        team.add(new Player("Ronaldo", "Forward", 94));
+        team.add(new Player("Ramos", "Defender", 88));
+
+        // Display team
+        System.out.println("Team Roster:");
+        for (Player player : team) {
+            System.out.println("  " + player);
+        }
+
+        System.out.println("\nSprint 2 Complete: Player class and ArrayList demonstrated!");
     }
 }
