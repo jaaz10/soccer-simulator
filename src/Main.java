@@ -1,18 +1,25 @@
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=== Soccer Simulator - Sprint 4: STATE PATTERN ===");
-        System.out.println("Design Patterns: Factory Method, Strategy, Singleton, Builder, STATE\n");
+        System.out.println("=== Soccer Simulator - All Design Patterns ===");
+        System.out.println("Factory Method | Strategy | Singleton | Builder | State | Command\n");
 
-        // Build teams
+        // --- SINGLETON: one WorldCup instance for the whole app ---
+        System.out.println("--- 1. SINGLETON PATTERN ---");
+        WorldCup worldCup = WorldCup.getInstance();
+        WorldCup sameCup = WorldCup.getInstance(); // returns existing instance, no second constructor call
+        System.out.println("Same instance? " + (worldCup == sameCup));
+
+        // --- BUILDER + FACTORY METHOD: step-by-step teams, creators make players by position ---
+        System.out.println("\n--- 2. BUILDER + FACTORY METHOD PATTERNS ---");
         Team brazil = new TeamBuilder()
             .setName("Brazil 🇧🇷")
-            .addPlayer("Neymar", "Forward")
-            .addPlayer("Casemiro", "Midfielder")
-            .addPlayer("Marquinhos", "Defender")
-            .addPlayer("Alisson", "Goalkeeper")
+            .addPlayer("Neymar", "Forward")       // ForwardCreator (Factory Method)
+            .addPlayer("Casemiro", "Midfielder")  // MidfielderCreator
+            .addPlayer("Marquinhos", "Defender")  // DefenderCreator
+            .addPlayer("Alisson", "Goalkeeper")   // GoalkeeperCreator
             .setTactic(new AttackingTactic())
             .build();
-        
+
         Team argentina = new TeamBuilder()
             .setName("Argentina 🇦🇷")
             .addPlayer("Lionel Messi", "Forward")
@@ -22,55 +29,61 @@ public class Main {
             .setTactic(new DefensiveTactic())
             .build();
 
-        System.out.println("\n--- STATE PATTERN DEMO ---");
-        
-        // Create match
+        worldCup.addTeam(brazil);
+        worldCup.addTeam(argentina);
+        worldCup.displayWorldCup();
+
+        // --- STRATEGY: swap tactics at runtime, different bonus calculations ---
+        System.out.println("\n--- 3. STRATEGY PATTERN ---");
+        brazil.displayTacticalStats();
+        argentina.displayTacticalStats();
+
+        System.out.println("\nBrazil switches tactic mid-demo:");
+        brazil.setTactic(new DefensiveTactic());
+        brazil.displayTacticalStats();
+
+        // --- STATE + COMMAND: Match phases control rules; commands trigger actions ---
+        System.out.println("\n--- 4. STATE + COMMAND PATTERNS ---");
         Match match = new Match(brazil, argentina);
-        
-        // Try to score before match starts
-        System.out.println("\n--- Trying to score before match starts ---");
-        match.scoreGoal("Brazil 🇧🇷", "Neymar");
-        
-        // Start match
-        System.out.println("\n--- Starting Match ---");
-        match.startMatch();
-        
-        // Score some goals in first half
-        System.out.println("\n--- First Half Goals ---");
-        match.scoreGoal("Brazil 🇧🇷", "Neymar");
-        match.scoreGoal("Argentina 🇦🇷", "Lionel Messi");
-        
-        // End first half
-        System.out.println("\n--- Ending First Half ---");
-        match.endHalf();
-        
-        // Try to score during half time
-        System.out.println("\n--- Trying to score during half time ---");
-        match.scoreGoal("Brazil 🇧🇷", "Neymar");
-        
-        // Start second half
-        System.out.println("\n--- Starting Second Half ---");
-        match.startMatch();
-        
-        // Score in second half
-        System.out.println("\n--- Second Half Goals ---");
-        match.scoreGoal("Argentina 🇦🇷", "Lionel Messi");
-        match.scoreGoal("Brazil 🇧🇷", "Neymar");
-        
-        // End match
-        System.out.println("\n--- Ending Match ---");
-        match.endMatch();
-        
-        // Try to score after match ends
-        System.out.println("\n--- Trying to score after match ends ---");
-        match.scoreGoal("Brazil 🇧🇷", "Neymar");
-        
-        // Display final info
+        MatchController controller = new MatchController();
+
+        System.out.println("\nTrying to score before match starts (State blocks it):");
+        controller.run(new ScoreGoalCommand(match, "Brazil 🇧🇷", "Neymar"));
+
+        System.out.println("\nStarting match:");
+        controller.run(new StartMatchCommand(match));
+
+        System.out.println("\nFirst half goals:");
+        controller.run(new ScoreGoalCommand(match, "Brazil 🇧🇷", "Neymar"));
+        controller.run(new ScoreGoalCommand(match, "Argentina 🇦🇷", "Lionel Messi"));
+
+        System.out.println("\nEnding first half:");
+        controller.run(new EndHalfCommand(match));
+
+        System.out.println("\nTrying to score during half time (State blocks it):");
+        controller.run(new ScoreGoalCommand(match, "Brazil 🇧🇷", "Neymar"));
+
+        System.out.println("\nStarting second half:");
+        controller.run(new StartMatchCommand(match));
+
+        System.out.println("\nSecond half goals:");
+        controller.run(new ScoreGoalCommand(match, "Argentina 🇦🇷", "Lionel Messi"));
+        controller.run(new ScoreGoalCommand(match, "Brazil 🇧🇷", "Neymar"));
+
+        System.out.println("\nEnding match:");
+        controller.run(new EndMatchCommand(match));
+
+        System.out.println("\nTrying to score after full time (State blocks it):");
+        controller.run(new ScoreGoalCommand(match, "Brazil 🇧🇷", "Neymar"));
+
         match.displayMatchInfo();
-        
-        System.out.println("\n=== STATE PATTERN Demonstrated! ===");
-        System.out.println("✅ Match transitions through states: PreMatch → FirstHalf → HalfTime → SecondHalf → FullTime");
-        System.out.println("✅ Each state has different behaviors (can/cannot score)");
-        System.out.println("✅ State transitions happen automatically");
+
+        System.out.println("\n=== All Patterns Demonstrated ===");
+        System.out.println("✅ Singleton     - WorldCup.getInstance()");
+        System.out.println("✅ Builder       - TeamBuilder builds teams step by step");
+        System.out.println("✅ Factory Method - PlayerCreator makes players by position");
+        System.out.println("✅ Strategy      - AttackingTactic / DefensiveTactic swapped on Team");
+        System.out.println("✅ State         - Match phases control when scoring is allowed");
+        System.out.println("✅ Command       - MatchController runs Start/End/Score commands");
     }
 }
