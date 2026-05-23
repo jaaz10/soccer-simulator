@@ -61,27 +61,27 @@ java -cp src/bin Main
 
 Sprint 3 added design patterns and cleaned up the code so future sprints don't require rewriting everything.
 
-## What we cleaned up
+## What got cleaned up
 
 - Moved player creation out of Main into its own classes
 - Made team building a simple chain of method calls
 - Kept Main short — it just sets things up and runs the sim
 
-## Patterns we added
+## Patterns added
 
 **Factory Method** — Creates players based on position (Forward, Defender, etc.) without cluttering Main.
-Files: `PlayerCreator`, `ForwardCreator`, `MidfielderCreator`, `DefenderCreator`, `GoalkeeperCreator`, `Player`
+Files: PlayerCreator, ForwardCreator, MidfielderCreator, DefenderCreator, GoalkeeperCreator, Player
 
 **Strategy** — Lets a team swap tactics (Attacking or Defensive) without changing any other code.
-Files: `TacticStrategy`, `AttackingTactic`, `DefensiveTactic`
+Files: TacticStrategy, AttackingTactic, DefensiveTactic
 
 **Builder** — Builds a team step by step instead of one giant constructor call.
-Files: `TeamBuilder`, `Team`
+Files: TeamBuilder, Team
 
 **Singleton** — One WorldCup object manages the whole tournament.
-Files: `WorldCup`
+Files: WorldCup
 
-## Why this cleanup mattered
+## Why cleanup is good
 
 It made Sprint 4 easy to add. Match was already its own class, so dropping in states and commands didn't break anything.
 
@@ -97,11 +97,11 @@ Files: MatchState, PreMatchState, FirstHalfState, HalfTimeState, SecondHalfState
 **Command** — Every match action (scoring a goal, making a sub) is wrapped in a command object. One controller runs them all and keeps a log.
 Files: MatchCommand, ScoreGoalCommand, SubstitutePlayerCommand, MatchController
 
-## How it all connects
+## How all connects
 
 Sprint 3 builds the teams (Builder + Factory + Strategy). Sprint 4 runs the match (State + Command). Main just wires them together.
 
-## How to run
+## run
 
 ```
 javac src/*.java
