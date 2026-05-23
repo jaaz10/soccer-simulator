@@ -55,75 +55,66 @@ javac -d src/bin src/*.java
 Then run
 java -cp src/bin Main
 
-Sprint 3: Implemented Design Patterns + Refactoring
+---
 
-Sprint 3 was not only about adding patterns — it refactored the project so later sprints could plug in new behavior without rewriting core code.
+# Sprint 3: Design Patterns + Cleanup
 
-Refactoring goals (setup for Sprint 4 and Sprint 5)
-- Separate concerns: team setup vs match flow vs future match events
-- Keep `Main` as a thin demo/test entry point
-- Use small, focused classes (SRP) so new patterns drop in cleanly
+Sprint 3 added design patterns and cleaned up the code so future sprints don't require rewriting everything.
 
-What was refactored
-- **Factory Method** (`PlayerCreator` + position creators): player creation moved out of `Main`; new positions can be added without touching match code
-- **Builder** (`TeamBuilder`): builds complete `Team` objects in one place; `Main` only chains calls like `setName`, `addPlayer`, `setTactic`
-- **Strategy** (`TacticStrategy`, `AttackingTactic`, `DefensiveTactic`): tactics are swappable on a team without changing team or match logic
-- **Singleton** (`WorldCup`): one tournament manager instance, ready for Sprint 5 when multiple matches or a full tournament flow is added
-- **Cleaner `Team` / `Player` model**: match simulation can focus on `Match` instead of how rosters are built
+## What we cleaned up
 
-Why this matters for Sprint 4
-- `Match` became the single context for game flow → State pattern (pre-match, halves, full time) fit naturally
-- `Main` already orchestrated setup, not low-level logic → Command pattern (wrap actions, run via `MatchController`) was a small add-on, not a rewrite
+- Moved player creation out of Main into its own classes
+- Made team building a simple chain of method calls
+- Kept Main short — it just sets things up and runs the sim
 
-Why this matters for Sprint 5 (planned)
-- **Observer**: `Match` / commands can notify listeners when goals or state changes happen (commentary, UI, logging)
-- **More commands**: pass, shoot, tackle as new `Command` classes; same `MatchController` invoker
-- **Singleton + Builder**: `WorldCup` can register teams built with `TeamBuilder` and run a series of matches
+## Patterns we added
 
-1. Factory Method Pattern
-Reason: Makes different player types according to position.
-Classes: `PlayerCreator` (abstract), `ForwardCreator`, `MidfielderCreator`, `DefenderCreator`, `GoalkeeperCreator`, `Player`
-Advantages: Player creation is centralized; easier to add new positions without changing `Main` or `Match`.
+**Factory Method** — Creates players based on position (Forward, Defender, etc.) without cluttering Main.
+Files: `PlayerCreator`, `ForwardCreator`, `MidfielderCreator`, `DefenderCreator`, `GoalkeeperCreator`, `Player`
 
-2. Strategy Pattern
-Reason: Lets teams use various tactics dynamically.
-Classes: `TacticStrategy` (interface), `AttackingTactic`, `DefensiveTactic`
-Advantages: Teams can change strategy at runtime; easier to add new tactics.
+**Strategy** — Lets a team swap tactics (Attacking or Defensive) without changing any other code.
+Files: `TacticStrategy`, `AttackingTactic`, `DefensiveTactic`
 
-3. Builder Pattern
-Reason: Step-by-step team construction without a huge constructor.
-Classes: `TeamBuilder`, `Team`
-Advantages: Readable team setup in `Main`; hides Factory Method details inside `addPlayer`.
+**Builder** — Builds a team step by step instead of one giant constructor call.
+Files: `TeamBuilder`, `Team`
 
-4. Singleton Pattern
-Reason: One shared tournament/game manager for the app.
-Classes: `WorldCup`
-Advantages: Single source of truth for tournament data; ready for multi-match flows in Sprint 5.
+**Singleton** — One WorldCup object manages the whole tournament.
+Files: `WorldCup`
 
-Sprint 4: State + Command Patterns
+## Why this cleanup mattered
 
-Built on the Sprint 3 refactor — `Match` handles flow, commands handle actions, `Main` stays thin.
+It made Sprint 4 easy to add. Match was already its own class, so dropping in states and commands didn't break anything.
 
-5. State Pattern
-Reason: Match behavior changes by phase (pre-match, first half, half time, second half, full time).
-Classes: `MatchState` (interface), `PreMatchState`, `FirstHalfState`, `HalfTimeState`, `SecondHalfState`, `FullTimeState`, `Match` (context)
-Advantages: Each state owns its rules (e.g. when scoring is allowed); easy to add new phases.
+---
 
-6. Command Pattern
-Reason: Wrap match actions so `Main` runs them through one invoker instead of calling `Match` methods everywhere.
-Classes: `Command` (interface), `StartMatchCommand`, `EndHalfCommand`, `EndMatchCommand`, `ScoreGoalCommand`, `MatchController` (invoker)
-Advantages: One class per action (SRP); no static factories; easy to add Sprint 5 player commands the same way.
+# Sprint 4: State + Command Patterns
 
-How Sprint 3 → Sprint 4 fit together
+Built on top of Sprint 3. Match now moves through phases, and actions go through a controller.
+
+**State** — The match goes through phases: pre-match → first half → half time → second half → full time. Each phase is its own class with its own rules.
+Files: MatchState, PreMatchState, FirstHalfState, HalfTimeState, SecondHalfState, FullTimeState, Match
+
+**Command** — Every match action (scoring a goal, making a sub) is wrapped in a command object. One controller runs them all and keeps a log.
+Files: MatchCommand, ScoreGoalCommand, SubstitutePlayerCommand, MatchController
+
+## How it all connects
+
+Sprint 3 builds the teams (Builder + Factory + Strategy). Sprint 4 runs the match (State + Command). Main just wires them together.
+
+## How to run
+
 ```
-Sprint 3: TeamBuilder + Factory Method + Strategy  →  builds teams
-          Match (context)                         →  owns match flow
-Sprint 4: MatchState                              →  controls what is allowed when
-          Command + MatchController             →  triggers actions on Match
+javac src/*.java
+java -cp src Main
 ```
 
-Test: same compile/run as above via `src/Main.java`
+---
 
+# Sprint 5 (planned)
+
+- **Observer** — notify listeners when goals happen (for commentary, logging, etc.)
+- **More commands** — player actions like pass, shoot, tackle
+- **WorldCup tournament** — run multiple matches in a bracket using the existing setup
 Sprint 5 (planned next)
 - Observer — match event notifications (goals, state changes, commentary)
 - More commands — player actions (pass, shoot, tackle)
