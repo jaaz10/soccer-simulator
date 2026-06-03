@@ -110,13 +110,19 @@ java -cp src Main
 
 ---
 
-# Sprint 5 (planned)
+# Sprint 5: Observer Pattern
 
-- **Observer** — notify listeners when goals happen (for commentary, logging, etc.)
-- **More commands** — player actions like pass, shoot, tackle
-- **WorldCup tournament** — run multiple matches in a bracket using the existing setup
-Sprint 5 (planned next)
-- Observer — match event notifications (goals, state changes, commentary)
-- More commands — player actions (pass, shoot, tackle)
-- WorldCup — run multiple matches / simple tournament using existing Builder + Singleton
+`Match` is the subject: when goals are scored or the state changes, it notifies registered listeners. `CommentaryObserver` prints live commentary (`📢` lines) so match events are not hard-coded only in `Match` / `Main`.
+
+**Observer** — Decouple match events from how they are displayed (commentary, logging, UI later).
+Files: `MatchObserver` (interface), `CommentaryObserver`, `Match` (`addObserver`, `notifyObservers`)
+
+## How it fits
+
+```
+Match (subject)  →  goal / state change  →  notifyObservers()
+CommentaryObserver  →  update(event)
+```
+
+Test: run `Main` and check section **5. OBSERVER PATTERN (Sprint 5)** for `📢` commentary lines.
 

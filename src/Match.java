@@ -1,9 +1,13 @@
+import java.util.ArrayList;
+import java.util.List;
+
 // Context - maintains current state and delegates behavior
 public class Match {
     private Team homeTeam;
     private Team awayTeam;
     private int homeScore;
     private int awayScore;
+    private final List<MatchObserver> observers = new ArrayList<>();
     
     // States
     private MatchState preMatchState;
@@ -32,6 +36,17 @@ public class Match {
         
         System.out.println("\n⚽ Match created: " + homeTeam.getName() + " vs " + awayTeam.getName());
         System.out.println("📊 Current State: " + currentState.getStateName());
+        notifyObservers("Match scheduled: " + homeTeam.getName() + " vs " + awayTeam.getName());
+    }
+
+    public void addObserver(MatchObserver observer) {
+        observers.add(observer);
+    }
+
+    private void notifyObservers(String event) {
+        for (MatchObserver observer : observers) {
+            observer.update(event);
+        }
     }
     
     // State getters (needed by concrete states)
@@ -45,6 +60,7 @@ public class Match {
     public void setState(MatchState state) {
         this.currentState = state;
         System.out.println("📊 Current State: " + currentState.getStateName());
+        notifyObservers("State: " + currentState.getStateName());
     }
     
     // Delegate to current state
@@ -70,8 +86,11 @@ public class Match {
             System.out.println("⚽ GOAL! " + player + " scores for " + team + 
                              " | Score: " + homeTeam.getName() + " " + homeScore + 
                              " - " + awayScore + " " + awayTeam.getName());
+            notifyObservers("GOAL! " + player + " (" + team + ") — " +
+                homeTeam.getName() + " " + homeScore + " - " + awayScore + " " + awayTeam.getName());
         } else {
             System.out.println("❌ Cannot score in " + currentState.getStateName() + " state!");
+            notifyObservers("No goal — play stopped in " + currentState.getStateName());
         }
     }
     
