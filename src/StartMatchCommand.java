@@ -9,4 +9,9 @@ public class StartMatchCommand implements Command {
     public void execute() {
         match.startMatch();
     }
+
+    @Override
+    public String getName() {
+        return "StartMatch";
+    }
 }

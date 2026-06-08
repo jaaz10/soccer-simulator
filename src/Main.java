@@ -92,8 +92,14 @@ public class Main {
         controller.run(new ScoreGoalCommand(observedMatch, "Brazil 🇧🇷", "Neymar"));
         controller.run(new ScoreGoalCommand(observedMatch, "Argentina 🇦🇷", "Lionel Messi"));
         controller.run(new EndHalfCommand(observedMatch));
+        controller.run(new StartMatchCommand(observedMatch));
         controller.run(new ScoreGoalCommand(observedMatch, "Brazil 🇧🇷", "Neymar"));
         controller.run(new EndMatchCommand(observedMatch));
+
+        observedMatch.displayMatchInfo();
+
+        System.out.println("\nCommand History:");
+        controller.printHistory();
 
         System.out.println("\n=== All Patterns Demonstrated ===");
         System.out.println("✅ Singleton     - WorldCup.getInstance()");

@@ -9,4 +9,9 @@ public class EndMatchCommand implements Command {
     public void execute() {
         match.endMatch();
     }
+
+    @Override
+    public String getName() {
+        return "EndMatch";
+    }
 }

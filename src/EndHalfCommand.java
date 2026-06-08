@@ -9,4 +9,9 @@ public class EndHalfCommand implements Command {
     public void execute() {
         match.endHalf();
     }
+
+    @Override
+    public String getName() {
+        return "EndHalf";
+    }
 }

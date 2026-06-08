@@ -13,4 +13,9 @@ public class ScoreGoalCommand implements Command {
     public void execute() {
         match.scoreGoal(teamName, playerName);
     }
+
+    @Override
+    public String getName() {
+        return "ScoreGoal(" + playerName + ", " + teamName + ")";
+    }
 }

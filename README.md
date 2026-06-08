@@ -94,8 +94,8 @@ Built on top of Sprint 3. Match now moves through phases, and actions go through
 **State** — The match goes through phases: pre-match → first half → half time → second half → full time. Each phase is its own class with its own rules.
 Files: MatchState, PreMatchState, FirstHalfState, HalfTimeState, SecondHalfState, FullTimeState, Match
 
-**Command** — Every match action (scoring a goal, making a sub) is wrapped in a command object. One controller runs them all and keeps a log.
-Files: MatchCommand, ScoreGoalCommand, SubstitutePlayerCommand, MatchController
+**Command** — Every match action (scoring a goal, ending a half, etc.) is wrapped in a command object. The controller runs them and keeps a history log.
+Files: Command, StartMatchCommand, EndHalfCommand, EndMatchCommand, ScoreGoalCommand, MatchController
 
 ## How all connects
 
@@ -104,8 +104,8 @@ Sprint 3 builds the teams (Builder + Factory + Strategy). Sprint 4 runs the matc
 ## run
 
 ```
-javac src/*.java
-java -cp src Main
+javac -d src/bin src/*.java
+java -cp src/bin Main
 ```
 
 ---
@@ -124,5 +124,46 @@ Match (subject)  →  goal / state change  →  notifyObservers()
 CommentaryObserver  →  update(event)
 ```
 
-Test: run `Main` and check section **5. OBSERVER PATTERN (Sprint 5)** for `📢` commentary lines.
+Test: run `Main` and check section for `📢` commentary lines.
 
+---
+
+# Final Submission
+
+## All 7 Design Patterns
+
+Here is every pattern in the project and what files go with it. I ended up with 7.
+
+| # | Pattern | What it does in this project | Files |
+|---|---------|------------------------------|-------|
+| 1 | Singleton | Only one WorldCup object ever exists | WorldCup |
+| 2 | Builder | Builds a Team step by step (name, players, tactic) | TeamBuilder, Team |
+| 3 | Factory Method | Creates the right kind of Player based on position | PlayerCreator, ForwardCreator, MidfielderCreator, DefenderCreator, GoalkeeperCreator, Player |
+| 4 | Strategy | Lets a Team swap between Attacking and Defensive tactics | TacticStrategy, AttackingTactic, DefensiveTactic |
+| 5 | State | Controls what the Match can do depending on the current phase | MatchState, PreMatchState, FirstHalfState, HalfTimeState, SecondHalfState, FullTimeState, Match |
+| 6 | Command | Wraps match actions (score, start, end) into objects so a controller can run them | Command, StartMatchCommand, EndHalfCommand, EndMatchCommand, ScoreGoalCommand, MatchController |
+| 7 | Observer | Match tells listeners when something happens, CommentaryObserver prints it | MatchObserver, CommentaryObserver, Match |
+
+## How to compile and run
+
+```
+javac -d src/bin src/*.java
+java -cp src/bin Main
+```
+
+## Bugs
+
+- WorldCup singleton is not thread-safe. It uses lazy initialization without `synchronized`, so if two threads called `getInstance()` at the same time you could get two objects. Does not matter here since the program is single-threaded but worth noting.
+- The MatchController is shared between both demo matches, so its command history shows commands from both matches mixed together. Ideally each match would have its own controller.
+
+## Stuff that is not finished
+
+- **No random simulation.** Goals and events are hard-coded in Main. The original plan was to use `java.util.Random` and player skill levels to decide what happens, but I focused on getting the design patterns right instead.
+- **No user input.** You cannot pick teams or trigger events yourself. It just runs the demo automatically.
+- **Skill levels don't do anything.** Players have a skill number but it never affects the match outcome since there is no random engine.
+- **No real tournament.** WorldCup stores teams but does not run a bracket or group stage.
+- **No saving.** You cannot save or load a match.
+
+## UML
+
+The UML diagram is in `UML.drawio.png` at the root.
